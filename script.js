@@ -18,7 +18,7 @@ document.getElementById('playButton').addEventListener('click', () => {
                 oscillator.disconnect(); // Desconecta para liberar recursos
             }
 
-   // 1. Cria um nó oscilador
+   // 1. Cria um nó osoncilador
             oscillator = audioContext.createOscillator();
   oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
 
@@ -27,11 +27,17 @@ oscillator.frequency.setValueAtTime(document.getElementById("nota").value, audio
    // 3. Define o tipo de onda (senoide é a mais comum para tons puros)
             oscillator.type = 'sine'; // Outros tipos: 'square', 'sawtooth', 'triangle'
 
-            // 4. Conecta o oscilador ao destino (seus alto-falantes)
-            oscillator.connect(audioContext.destination);
+         
+       const gainNode = new GainNode(audioContext, { gain: 0.7 });
 
-            // 5. Inicia o oscilador
-            oscillator.start();
+        // Connect both nodes to the speakers
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        // Now that everything is connected, starts the sound
+        oscillator.start(0);
+
 });
 
 document.getElementById('StopButton').addEventListener('click', () => {
