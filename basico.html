@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Meu Primeiro Som</title>
+</head>
+<body>
+
+    <h1>Gerador de Som Simples</h1>
+    <button onclick="tocarSom()">Tocar Som</button>
+
+    <script>
+    function tocarSom() {
+        // 1. Cria o "estúdio". É o objeto principal que gerencia todo o áudio.
+        // Pense nisso como ligar a mesa de som.
+        const audioCtx = new window.AudioContext();
+
+        // 2. Cria um "instrumento". Um Oscilador gera uma onda sonora contínua, como um tom puro.
+        const oscilador = audioCtx.createOscillator();
+
+        // 3. Conecta o nosso instrumento à "saída de som" do navegador (os alto-falantes).
+        // Sem isso, o som seria criado mas ninguém o ouviria.
+        oscilador.connect(audioCtx.destination);
+
+        // 4. Inicia o som! O som começará a tocar imediatamente.
+        oscilador.start();
+    }
+    </script>
+
+</body>
+</html>
