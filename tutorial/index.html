@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial AudioContext</title>
+    <style>
+        /* Apenas alguns estilos para o tutorial ficar mais legível. */
+        /* Você não precisa se preocupar com isso agora! */
+        body {
+            font-family: sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            padding: 2rem;
+            max-width: 800px;
+            margin: auto;
+        }
+        .step {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .step h2 {
+            color: #4a90e2;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 0.5rem;
+        }
+        pre {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1rem;
+            border-radius: 6px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .hidden {
+            display: none;
+        }
+        .info-box {
+            background-color: #e7f3fe;
+            border-left: 5px solid #4a90e2;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Tutorial Interativo: Seu Primeiro Som na Web</h1>
+    <p>Siga os passos abaixo para criar uma página que toca um som. Leia as explicações com calma!</p>
+
+    <!-- PASSO 1: O Básico -->
+    <div id="step-1" class="step">
+        <h2>Passo 1: Criando o Som</h2>
+        <p>Nosso primeiro objetivo é simples: criar um arquivo HTML com um botão que, ao ser clicado, gera um som. Vamos usar o mínimo de código possível.</p>
+        
+        <div class="info-box">
+            <strong>O que vamos fazer:</strong>
+            <ol>
+                <li>Criar um botão no HTML.</li>
+                <li>Adicionar um script JavaScript que será executado quando o botão for clicado.</li>
+                <li>Nesse script, vamos "ligar" nosso estúdio de som (`AudioContext`), criar um "instrumento" que gera uma onda sonora (`OscillatorNode`), conectar o instrumento aos "alto-falantes" do navegador e, finalmente, tocar o som.</li>
+            </ol>
+        </div>
+
+        <p>Copie e cole o código abaixo em um arquivo, salve-o como `som.html` e abra no seu navegador.</p>
+        
+        <pre><code>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Meu Primeiro Som&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;h1&gt;Gerador de Som Simples&lt;/h1&gt;
+    &lt;button onclick="tocarSom()"&gt;Tocar Som&lt;/button&gt;
+
+    &lt;script&gt;
+    function tocarSom() {
+        // 1. Cria o "estúdio". É o objeto principal que gerencia todo o áudio.
+        // Pense nisso como ligar a mesa de som.
+        const audioCtx = new window.AudioContext();
+
+        // 2. Cria um "instrumento". Um Oscilador gera uma onda sonora contínua, como um tom puro.
+        const oscilador = audioCtx.createOscillator();
+
+        // 3. Conecta o nosso instrumento à "saída de som" do navegador (os alto-falantes).
+        // Sem isso, o som seria criado mas ninguém o ouviria.
+        oscilador.connect(audioCtx.destination);
+
+        // 4. Inicia o som! O som começará a tocar imediatamente.
+        oscilador.start();
+    }
+    &lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+        </code></pre>
+        
+        <p>Depois de testar o código no seu navegador, clique no botão abaixo para continuar.</p>
+        <button onclick="showStep(2)">Consegui! Qual o próximo passo?</button>
+    </div>
+
+    <!-- PASSO 2: Melhores Práticas e Controle -->
+    <div id="step-2" class="step hidden">
+        <h2>Passo 2: Adicionando Controle e Boas Práticas</h2>
+        <p>Ótimo! Agora você tem um som. Mas você notou o que acontece se você clicar no botão várias vezes? O navegador cria um som novo a cada clique, e eles se sobrepõem, criando um barulho estranho. Isso não é ideal.</p>
+        <p>Além disso, o som que criamos nunca para! Vamos consertar isso adicionando um botão de "Parar" e garantindo que apenas um som seja tocado por vez.</p>
+
+        <div class="info-box">
+            <strong>O que vamos fazer:</strong>
+            <ol>
+                <li>Adicionar um botão "Parar Som" no HTML.</li>
+                <li>Criar uma variável "global" para guardar nosso oscilador, assim podemos acessá-lo tanto para tocar quanto para parar.</li>
+                <li>Na função `tocarSom`, vamos primeiro verificar se já não existe um som tocando.</li>
+                <li>Criar uma nova função `pararSom` que irá parar o oscilador.</li>
+            </ol>
+        </div>
+
+        <p>Modifique seu arquivo `som.html` com o código abaixo.</p>
+
+        <pre><code>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Meu Som Controlado&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;h1&gt;Gerador de Som Controlado&lt;/h1&gt;
+    &lt;button onclick="tocarSom()"&gt;Tocar Som&lt;/button&gt;
+    &lt;button onclick="pararSom()"&gt;Parar Som&lt;/button&gt;
+
+    &lt;script&gt;
+    // Criamos as variáveis fora das funções para que elas "sobrevivam"
+    // e possam ser acessadas por qualquer função.
+    let audioCtx;
+    let oscilador;
+
+    function tocarSom() {
+        // Se o oscilador já existe (ou seja, o som já está tocando),
+        // não fazemos nada. Isso evita o problema de múltiplos sons.
+        if (oscilador) {
+            return;
+        }
+
+        // Criamos o AudioContext apenas uma vez, na primeira vez que tocamos.
+        if (!audioCtx) {
+            audioCtx = new window.AudioContext();
+        }
+
+        // Criamos o oscilador e o guardamos na nossa variável global.
+        oscilador = audioCtx.createOscillator();
+        oscilador.connect(audioCtx.destination);
+        oscilador.start();
+    }
+
+    function pararSom() {
+        // Se não houver um oscilador para parar, não fazemos nada.
+        if (!oscilador) {
+            return;
+        }
+        
+        // Para o som.
+        oscilador.stop();
+
+        // Importante: "Limpamos" a variável para que a função tocarSom()
+        // saiba que pode criar um novo som na próxima vez.
+        oscilador = null;
+    }
+    &lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+        </code></pre>
+        <p>Teste o novo código. Agora você pode iniciar e parar o som, e clicar em "Tocar Som" várias vezes não causa mais problemas. Quando estiver pronto, vamos para a conclusão.</p>
+        <button onclick="showStep(3)">Entendido! O que mais posso aprender?</button>
+    </div>
+
+    <!-- PASSO 3: Conclusão e Próximos Passos -->
+    <div id="step-3" class="step hidden">
+        <h2>Parabéns e Próximos Passos!</h2>
+        <p>Você conseguiu! Você criou uma página web que gera e controla um som dinamicamente. Você aprendeu os conceitos mais fundamentais do `AudioContext`:</p>
+        <ul>
+            <li><strong>AudioContext:</strong> O "cérebro" de todas as operações de áudio.</li>
+            <li><strong>Nodes (Nós):</strong> Peças que fazem algo com o som, como o `OscillatorNode` (que cria som) ou o `audioCtx.destination` (que é a saída de som).</li>
+            <li><strong>Conexões:</strong> A forma como ligamos as diferentes peças (`.connect()`).</li>
+            <li><strong>Controle de Estado:</strong> A importância de usar variáveis para saber o que está acontecendo (se um som está tocando ou не).</li>
+        </ul>
+        
+        <h3>O que explorar agora?</h3>
+        <p>O mundo do áudio na web é gigante. Aqui estão algumas ideias do que você pode tentar a seguir:</p>
+        <div class="info-box">
+            <ul>
+                <li><strong>Mudar o som:</strong> O oscilador tem uma propriedade `.type`. Tente mudar o tipo de onda. Por exemplo: `oscilador.type = 'square';` (outras opções são 'sine', 'sawtooth', 'triangle').</li>
+                <li><strong>Mudar a nota (frequência):</strong> Use a propriedade `.frequency.value`. Por exemplo: `oscilador.frequency.value = 440;` (essa é a nota Lá). Você pode até criar um pequeno piano!</li>
+                <li><strong>Controlar o Volume:</strong> Existe outro "nó" chamado `GainNode`, que funciona como um botão de volume. Você o conecta entre o oscilador e a saída de som.</li>
+                <li><strong>Carregar um arquivo de som:</strong> Em vez de gerar um tom, você pode carregar um arquivo MP3 e manipulá-lo!</li>
+            </ul>
+        </div>
+        <p>Continue experimentando! A programação é sobre construir, testar e aprender. Você deu um ótimo primeiro passo.</p>
+    </div>
+
+    <script>
+        // Função simples para controlar a visibilidade dos passos do tutorial
+        function showStep(stepNumber) {
+            // Esconde todos os passos
+            document.getElementById('step-1').classList.add('hidden');
+            document.getElementById('step-2').classList.add('hidden');
+            document.getElementById('step-3').classList.add('hidden');
+
+            // Mostra o passo desejado
+            const stepToShow = document.getElementById('step-' + stepNumber);
+            if (stepToShow) {
+                stepToShow.classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
