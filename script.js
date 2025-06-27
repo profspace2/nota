@@ -1,16 +1,12 @@
 let audioContext;
 let oscillator;
 
-audioContext = new AudioContext();
-
-
 document.getElementById('playButton').addEventListener('click', () => {
 
    if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
             }
 
-  
  // Garante que o contexto esteja em estado 'running'
             if (audioContext.state === 'suspended') {
                 audioContext.resume();
