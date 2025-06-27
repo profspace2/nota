@@ -6,11 +6,10 @@
 <body>
 
     <h1>Gerador de Som Simples</h1>
-    <button onclick="tocarSom()">Tocar Som</button>
+    <button onclick="tocarSom()" style="width: 1000px;height: 400px;">Tocar Som</button>
 
     <script>
-        var x;
-      
+        var x=10;
       
     function tocarSom() {
         // 1. Cria o "estúdio". É o objeto principal que gerencia todo o áudio.
@@ -24,26 +23,23 @@
         // Sem isso, o som seria criado mas ninguém o ouviria.
         oscilador.connect(audioCtx.destination);
 
-        oscilador.frequency.value = x*10;
+        oscilador.frequency.value = x;
 
         // 4. Inicia o som! O som começará a tocar imediatamente.
         oscilador.start();
 
-document.addEventListener('mousemove', function(e) {
-      x = e.clientX;
-      oscilador.frequency.value = x*10;
-      oscilador.start();
-      //var y = e.clientY;
-      });
+
 
         // 5. Para o som após 1 segundo (1000 milissegundos).
         // Isso é opcional, mas sem isso o som continuaria indefinidamente.
         setTimeout(() => {
             oscilador.stop();
-        }, 1000);
+        }, 5000);
     }
 
-
+document.addEventListener('mousemove', function(e) {
+      x = e.clientX;
+      });
     </script>
 
 </body>
