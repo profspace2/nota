@@ -29,14 +29,20 @@
         // 4. Inicia o som! O som começará a tocar imediatamente.
         oscilador.start();
 
-    }
-
 document.addEventListener('mousemove', function(e) {
       x = e.clientX;
       oscilador.frequency.value = x*10;
       oscilador.start();
       //var y = e.clientY;
       });
+
+        // 5. Para o som após 1 segundo (1000 milissegundos).
+        // Isso é opcional, mas sem isso o som continuaria indefinidamente.
+        setTimeout(() => {
+            oscilador.stop();
+        }, 1000);
+    }
+
 
     </script>
 
