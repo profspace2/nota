@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial Interativo: Aprendendo Props no React Native</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Serene Coast -->
+    <!-- Application Structure Plan: A aplicação foi estruturada como uma narrativa de aprendizado de página única, dividida em quatro seções principais para um fluxo lógico: 1. Introdução Conceitual: Apresenta o conceito de 'props' com uma analogia visual. 2. Explorador Interativo: O núcleo da aplicação, onde o usuário clica em passos para ver o código e o resultado visual mudarem simultaneamente, tornando a relação causa-efeito explícita. 3. Playground Experimental: Uma área para o usuário aplicar o que aprendeu, adicionando seus próprios dados e vendo o resultado em tempo real. 4. Resumo: Consolida o conhecimento com os pontos-chave. Esta estrutura foi escolhida para transformar a aprendizagem passiva (leitura) em ativa (interação e experimentação), o que é mais eficaz para conceitos de programação. -->
+    <!-- Visualization & Content Choices: Report Info: Conceitos de props, código antes/depois, resultado final. -> Goal: Ensinar, Comparar, Permitir Experimentação. -> Viz/Presentation Method: Seção 1 (Conceito): Diagrama HTML/Tailwind para a analogia da 'fábrica de componentes'. Seção 2 (Passos): Blocos de código estilizados e uma 'tela de celular' simulada, ambos atualizados dinamicamente com JS. Seção 3 (Playground): Formulário HTML para entrada do usuário que atualiza a 'tela de celular'. Seção 4 (Resumo): Lista de tópicos bem formatada. -> Interaction: Botões de 'próximo/anterior' para navegar pelos passos do tutorial. O formulário no playground permite a criação de conteúdo dinâmico pelo usuário. -> Justification: Este método torna o conteúdo abstrato do código em algo tangível e visualmente reativo, o que melhora drasticamente a compreensão para iniciantes. -> Library/Method: Vanilla JavaScript para toda a lógica de estado e manipulação do DOM. Tailwind CSS para todo o estilo. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            background-color: #F8F7F4; /* Serene Coast - Sand */
+            font-family: 'Inter', sans-serif;
+        }
+        .code-block {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .highlight-add {
+            background-color: rgba(4, 120, 87, 0.3);
+            display: block;
+            margin: -2px -1.5rem;
+            padding: 2px 1.5rem;
+            border-left: 3px solid #06B6D4;
+        }
+        .highlight-remove {
+            background-color: rgba(153, 27, 27, 0.2);
+            text-decoration: line-through;
+            display: block;
+        }
+        .phone-screen {
+            background-color: #ecf0f1;
+        }
+        .phone-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        .phone-card-title {
+            font-weight: bold;
+            font-size: 0.875rem;
+            color: #333;
+        }
+        .phone-card-pages {
+            font-size: 0.75rem;
+            color: #666;
+        }
+        .btn {
+            background-color: #2A4A57; /* Serene Coast - Deep Sea */
+            color: #F8F7F4; /* Serene Coast - Sand */
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #4C7280; /* Serene Coast - Coastal Mist */
+        }
+        .btn-secondary {
+            background-color: #B0C4B1; /* Serene Coast - Seafoam */
+            color: #2A4A57; /* Serene Coast - Deep Sea */
+        }
+        .btn-secondary:hover {
+            background-color: #97ab98;
+        }
+    </style>
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Fira+Code&display=swap" rel="stylesheet">
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+
+        <!-- Seção 1: Introdução -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#2A4A57] mb-4">Tutorial: Entendendo `props` com React Native</h1>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">Uma jornada interativa para aprender como componentes se comunicam e se tornam reutilizáveis.</p>
+        </header>
+
+        <!-- Seção 2: Conceito -->
+        <section class="mb-16 bg-white p-8 rounded-xl shadow-md">
+            <h2 class="text-3xl font-bold text-[#2A4A57] mb-6 text-center">O que são `props`?</h2>
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div class="text-gray-700 space-y-4">
+                    <p>Pense em um componente React como uma **fábrica de widgets**. Sozinha, a fábrica só sabe construir uma coisa genérica.</p>
+                    <p>As **`props`** (propriedades) são como uma **planta de construção** que você entrega à fábrica. Essa planta contém as especificações exatas do que você quer.</p>
+                    <p>Ao enviar `props` diferentes, a mesma fábrica (componente) pode produzir widgets completamente diferentes (elementos de UI), tornando seu código incrivelmente eficiente e reutilizável.</p>
+                </div>
+                <div class="bg-[#F8F7F4] p-6 rounded-lg border border-gray-200">
+                    <div class="text-center mb-4">
+                        <span class="font-bold text-lg text-[#4C7280]">Componente Pai (App.js)</span>
+                    </div>
+                    <div class="flex flex-col items-center space-y-2">
+                        <div class="bg-blue-100 text-blue-800 p-2 rounded-md text-sm shadow">props = { title: "Livro A", pages: 100 }</div>
+                        <svg class="w-6 h-10 text-[#B0C4B1]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                         <div class="bg-green-100 text-green-800 p-2 rounded-md text-sm shadow">props = { title: "Livro B", pages: 250 }</div>
+                         <svg class="w-6 h-10 text-[#B0C4B1]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg mt-4 shadow-inner text-center">
+                        <span class="font-bold text-lg text-[#4C7280]">Fábrica / Componente Filho (AssetExample.js)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção 3: Explorador Interativo -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold text-[#2A4A57] mb-8 text-center">Vamos Construir: Passo a Passo</h2>
+            
+            <div id="tutorial-step-display" class="bg-white p-6 rounded-xl shadow-md mb-6">
+                <h3 id="step-title" class="text-2xl font-bold text-[#2A4A57] mb-2"></h3>
+                <p id="step-description" class="text-gray-600"></p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-6">
+                <!-- Coluna dos Arquivos -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div>
+                        <h4 class="text-xl font-bold mb-2 text-gray-700">Arquivo: <span class="font-mono text-[#4C7280]">App.js</span> (Pai)</h4>
+                        <div id="app-code" class="code-block"></div>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-bold mb-2 text-gray-700">Arquivo: <span class="font-mono text-[#4C7280]">components/AssetExample.js</span> (Filho)</h4>
+                        <div id="asset-code" class="code-block"></div>
+                    </div>
+                </div>
+
+                <!-- Coluna do Resultado -->
+                <div class="lg:col-span-1">
+                    <h4 class="text-xl font-bold mb-2 text-gray-700 text-center">Resultado Visual</h4>
+                    <div class="sticky top-8">
+                        <div class="w-full max-w-sm mx-auto bg-gray-800 rounded-3xl p-3 shadow-2xl">
+                            <div class="w-full h-[500px] phone-screen rounded-2xl p-4 overflow-y-auto" id="phone-output">
+                                <!-- O conteúdo será renderizado aqui -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-center items-center mt-8 space-x-4">
+                <button id="prev-btn" class="btn-secondary font-bold py-2 px-6 rounded-lg shadow">Anterior</button>
+                <span id="step-counter" class="font-mono text-gray-600"></span>
+                <button id="next-btn" class="btn font-bold py-2 px-6 rounded-lg shadow">Próximo</button>
+            </div>
+        </section>
+
+        <!-- Seção 4: Playground -->
+        <section class="mb-16 bg-white p-8 rounded-xl shadow-md">
+            <h2 class="text-3xl font-bold text-[#2A4A57] mb-6 text-center">Playground: Crie Seus Próprios Livros!</h2>
+            <p class="text-center text-gray-600 mb-6 max-w-2xl mx-auto">Agora é sua vez! Adicione livros à estante no Passo 3 e veja a mágica da reutilização de componentes acontecer.</p>
+            <div id="playground" class="max-w-md mx-auto space-y-4">
+                <div class="space-y-2">
+                    <label for="book-title" class="font-bold text-gray-700">Título do Livro:</label>
+                    <input type="text" id="book-title" placeholder="Ex: A Revolução dos Bichos" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#4C7280] focus:border-transparent">
+                </div>
+                <div class="space-y-2">
+                    <label for="book-pages" class="font-bold text-gray-700">Número de Páginas:</label>
+                    <input type="number" id="book-pages" placeholder="Ex: 152" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#4C7280] focus:border-transparent">
+                </div>
+                <button id="add-book-btn" class="w-full btn font-bold py-3 px-6 rounded-lg shadow disabled:opacity-50 disabled:cursor-not-allowed">Adicionar Livro à Estante</button>
+                <p id="playground-error" class="text-red-600 text-sm text-center"></p>
+            </div>
+        </section>
+
+        <!-- Seção 5: Resumo -->
+        <section class="text-center">
+             <h2 class="text-3xl font-bold text-[#2A4A57] mb-6">Resumo dos Conceitos</h2>
+             <div class="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-md text-left space-y-4">
+                <p>✔️ **Fluxo de Dados:** Os dados em React fluem de cima para baixo (Pai -> Filho).</p>
+                <p>✔️ **Props:** São um objeto JavaScript que o componente filho recebe. Acessamos com `props.nomeDaPropriedade`.</p>
+                <p>✔️ **Reutilização:** Componentes que usam props são "moldes" que podem ser reutilizados em vários lugares com dados diferentes.</p>
+                <p>✔️ **Sintaxe:** Para passar dados, usamos a sintaxe de atributo: `title="Texto"` para strings e `pages={123}` para números ou outras variáveis JS.</p>
+             </div>
+        </section>
+
+    </div>
+
+    <script>
+        const tutorialData = [
+            {
+                title: "Passo 1: O Ponto de Partida",
+                description: "Temos dois arquivos. `App.js` é o 'pai' que renderiza `AssetExample.js`, o 'filho'. No momento, o filho é estático e sempre mostra o mesmo conteúdo.",
+                appCode: `export default function App() {
+  return (
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.paragraph}>
+        Change code in the editor...
+      </Text>
+      <Card>
+        <AssetExample />
+      </Card>
+    </SafeAreaView>
+  );
+}`,
+                assetCode: `export default function AssetExample() {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.paragraph}>
+        Local files and assets...
+      </Text>
+      <Image style={styles.logo} ... />
+    </View>
+  );
+}`,
+                phoneContent: () => `
+                    <div class="phone-card">
+                        <p class="phone-card-title">Local files and assets...</p>
+                        <div class="h-20 w-20 bg-gray-300 rounded-md my-2 mx-auto flex items-center justify-center text-gray-500 text-xs">Imagem</div>
+                    </div>`
+            },
+            {
+                title: "Passo 2: Tornando o Filho Dinâmico",
+                description: "Modificamos `AssetExample.js`. Adicionamos `props` como argumento da função e substituímos o texto e a imagem fixos por `{props.title}` e `{props.pages}`. Agora, o componente está pronto para receber dados externos.",
+                appCode: `export default function App() {
+  return (
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.paragraph}>
+        Change code in the editor...
+      </Text>
+      <Card>
+        <AssetExample />
+      </Card>
+    </SafeAreaView>
+  );
+}`,
+                assetCode: `<span class="highlight-remove">export default function AssetExample() {</span>
+<span class="highlight-add">export default function AssetExample(props) {</span>
+  return (
+    <View style={styles.container}>
+<span class="highlight-remove">      &lt;Text style={styles.paragraph}&gt;
+        Local files and assets...
+      &lt;/Text&gt;
+      &lt;Image style={styles.logo} ... /&gt;</span>
+<span class="highlight-add">      &lt;Text style={styles.paragraph}&gt;
+        {props.title}
+      &lt;/Text&gt;
+      &lt;Text&gt;
+        {props.pages} páginas
+      &lt;/Text&gt;</span>
+    </View>
+  );
+}`,
+                phoneContent: () => `<div class="phone-card"><p class="phone-card-title"></p><p class="phone-card-pages"> páginas</p></div><p class="text-center text-sm text-gray-500 mt-4">O componente agora está vazio, esperando por props!</p>`
+            },
+            {
+                title: "Passo 3: Passando os Dados do Pai",
+                description: "Em `App.js`, agora passamos as props ao chamar `<AssetExample />`. Usamos a sintaxe de atributo para definir `title` e `pages`. Cada componente `<AssetExample>` renderiza dados diferentes, mostrando a reutilização!",
+                appCode: `export default function App() {
+  return (
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.paragraph}>
+<span class="highlight-add">        Minha Estante de Livros</span>
+      </Text>
+<span class="highlight-add">      &lt;Card&gt;
+        &lt;AssetExample title="O Pequeno Príncipe" pages={96} /&gt;
+      &lt;/Card&gt;
+      &lt;Card&gt;
+        &lt;AssetExample title="Dom Casmurro" pages={256} /&gt;
+      &lt;/Card&gt;
+      &lt;Card&gt;
+        &lt;AssetExample title="1984" pages={328} /&gt;
+      &lt;/Card&gt;</span>
+<span class="highlight-remove">      &lt;Card&gt;
+        &lt;AssetExample /&gt;
+      &lt;/Card&gt;</span>
+    </SafeAreaView>
+  );
+}`,
+                assetCode: `export default function AssetExample(props) {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.paragraph}>
+        {props.title}
+      </Text>
+      <Text>
+        {props.pages} páginas
+      </Text>
+    </View>
+  );
+}`,
+                phoneContent: (books) => {
+                     let html = `<p class="text-center font-bold text-lg mb-2">Minha Estante de Livros</p>`;
+                     books.forEach(book => {
+                         html += `
+                            <div class="phone-card">
+                                <p class="phone-card-title">${book.title}</p>
+                                <p class="phone-card-pages">${book.pages} páginas</p>
+                            </div>`;
+                     });
+                     return html;
+                }
+            },
+        ];
+
+        let currentStep = 0;
+        let books = [
+            { title: "O Pequeno Príncipe", pages: 96 },
+            { title: "Dom Casmurro", pages: 256 },
+            { title: "1984", pages: 328 },
+        ];
+        
+        const stepTitleEl = document.getElementById('step-title');
+        const stepDescriptionEl = document.getElementById('step-description');
+        const appCodeEl = document.getElementById('app-code');
+        const assetCodeEl = document.getElementById('asset-code');
+        const phoneOutputEl = document.getElementById('phone-output');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const stepCounterEl = document.getElementById('step-counter');
+        const playgroundEl = document.getElementById('playground');
+        const addBookBtn = document.getElementById('add-book-btn');
+        const bookTitleInput = document.getElementById('book-title');
+        const bookPagesInput = document.getElementById('book-pages');
+        const playgroundErrorEl = document.getElementById('playground-error');
+
+        function updateView() {
+            const step = tutorialData[currentStep];
+            stepTitleEl.textContent = step.title;
+            stepDescriptionEl.textContent = step.description;
+            appCodeEl.innerHTML = step.appCode;
+            assetCodeEl.innerHTML = step.assetCode;
+            stepCounterEl.textContent = `${currentStep + 1} / ${tutorialData.length}`;
+
+            if (currentStep === 2) {
+                phoneOutputEl.innerHTML = step.phoneContent(books);
+                playgroundEl.style.display = 'block';
+                addBookBtn.disabled = false;
+
+            } else {
+                phoneOutputEl.innerHTML = step.phoneContent();
+                playgroundEl.style.display = 'none';
+                addBookBtn.disabled = true;
+            }
+
+            prevBtn.disabled = currentStep === 0;
+            nextBtn.disabled = currentStep === tutorialData.length - 1;
+            prevBtn.classList.toggle('opacity-50', prevBtn.disabled);
+            nextBtn.classList.toggle('opacity-50', nextBtn.disabled);
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentStep > 0) {
+                currentStep--;
+                updateView();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentStep < tutorialData.length - 1) {
+                currentStep++;
+                updateView();
+            }
+        });
+
+        addBookBtn.addEventListener('click', () => {
+            const title = bookTitleInput.value.trim();
+            const pages = bookPagesInput.value;
+
+            playgroundErrorEl.textContent = '';
+            if (!title || !pages) {
+                 playgroundErrorEl.textContent = 'Por favor, preencha o título e as páginas.';
+                 return;
+            }
+            if (pages <= 0) {
+                playgroundErrorEl.textContent = 'O número de páginas deve ser positivo.';
+                return;
+            }
+
+            books.push({ title, pages: parseInt(pages) });
+            bookTitleInput.value = '';
+            bookPagesInput.value = '';
+            updateView();
+        });
+
+        // Initial load
+        updateView();
+    </script>
+</body>
+</html>
